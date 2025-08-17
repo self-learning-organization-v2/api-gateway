@@ -51,51 +51,29 @@ func main(){
 			if dynamic[0] != '/' {
 				dynamic = "/" + dynamic
 			}
-
 			switch e.Method{
-				case "GET": {
-					GET(v1Mux , dynamic , func(http.ResponseWriter, *http.Request){
-
-					})
+				case "GET":{
+					GET(v1Mux, dynamic)
 				}
 				case "POST":{
-					POST(v1Mux , dynamic , func(http.ResponseWriter, *http.Request){
-
-					})
+					POST(v1Mux, dynamic)
 				}
 				case "PUT":{
-					PUT(v1Mux , dynamic , func(http.ResponseWriter, *http.Request){
-
-					})
+					PUT(v1Mux, dynamic)
 				}
 				case "PATCH":{
-					PATCH(v1Mux , dynamic , func(http.ResponseWriter, *http.Request){
-
-					})
-				}
-				case "DELETE":{
-					DELETE(v1Mux , dynamic , func(http.ResponseWriter, *http.Request){
-
-					})
-				}
-				case "OPTIONS":{
-					OPTIONS(v1Mux , dynamic , func(http.ResponseWriter, *http.Request){
-
-					})
+					PATCH(v1Mux, dynamic)
 				}
 				case "HEAD":{
-					HEAD(v1Mux , dynamic , func(http.ResponseWriter, *http.Request){
-						
-					})
+					HEAD(v1Mux, dynamic)
+				}
+				case "OPTIONS":{
+					OPTIONS(v1Mux, dynamic)
+				}
+				case "DELETE":{
+					DELETE(v1Mux, dynamic)
 				}
 			}
-
-
-
-			v1Mux.HandleFunc(dynamic, func(w http.ResponseWriter, r *http.Request) {
-				fmt.Println(r.Method)
-				fmt.Fprintf(w, "Service: %s, Endpoint: %s %s", s.Name, e.Method, e.Path)
-			})
     }
 	}
 
@@ -106,72 +84,73 @@ func main(){
 }
 
 
-func GET(mux *http.ServeMux, path string, handler func(http.ResponseWriter, *http.Request)) {
+func GET(mux *http.ServeMux, path string) {
 	mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {
 			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 			return
 		}
-		handler(w, r)
+		// http.Get('/')
+		
 	})
 }
 
-func POST(mux *http.ServeMux, path string, handler func(http.ResponseWriter, *http.Request)) {
+func POST(mux *http.ServeMux, path string) {
 	mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 			return
 		}
-		handler(w, r)
+		// http.Post()
 	})
 }
 
-func PUT(mux *http.ServeMux, path string, handler func(http.ResponseWriter, *http.Request)) {
+func PUT(mux *http.ServeMux, path string) {
 	mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPut {
 			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 			return
 		}
-		handler(w, r)
+		// http.Put()
 	})
 }
 
-func PATCH(mux *http.ServeMux, path string, handler func(http.ResponseWriter, *http.Request)) {
+func PATCH(mux *http.ServeMux, path string) {
 	mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPatch {
 			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 			return
 		}
-		handler(w, r)
+		// http.Patch()
 	})
 }
 
-func DELETE(mux *http.ServeMux, path string, handler func(http.ResponseWriter, *http.Request)) {
+func DELETE(mux *http.ServeMux, path string) {
 	mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodDelete {
 			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 			return
 		}
-		handler(w, r)
+		// http.Delete()
 	})
 }
 
-func OPTIONS(mux *http.ServeMux, path string, handler func(http.ResponseWriter, *http.Request)) {
+func OPTIONS(mux *http.ServeMux, path string) {
 	mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodOptions {
 			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 			return
 		}
-		handler(w, r)
+		// http.Options()
 	})
 }
 
-func HEAD(mux *http.ServeMux, path string, handler func(http.ResponseWriter, *http.Request)) {
+func HEAD(mux *http.ServeMux, path string) {
 	mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodHead {
 			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 			return
 		}
-		handler(w, r)
+		// http.Head()
 	})
 }
