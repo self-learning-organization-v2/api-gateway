@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 )
 
@@ -19,14 +20,27 @@ func GET(mux *http.ServeMux, path string, servicePath string) {
 			return
 		}
 
-		fmt.Println("GET:", path, servicePath)
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(map[string]any{
-			"status":  http.StatusOK,
-			"message": "GET request handled successfully",
-		})
-		// http.Get('/')
-		
+		res, err := http.Get(servicePath)
+		if err != nil {
+			w.WriteHeader(http.StatusBadGateway)
+			json.NewEncoder(w).Encode(map[string]any{
+				"status": http.StatusBadGateway,
+				"error":  err.Error(),
+			})
+			return
+		}
+    defer res.Body.Close()
+
+		for key, values := range res.Header {
+			for _, v := range values {
+				w.Header().Add(key, v)
+			}
+		}
+
+		w.WriteHeader(res.StatusCode)
+		if _, err := io.Copy(w, res.Body); err != nil {
+			fmt.Println("error copying response:", err)
+		}
 	})
 }
 
@@ -43,13 +57,42 @@ func POST(mux *http.ServeMux, path string, servicePath string) {
 			return
 		}
 
-		fmt.Println("POST:", path, servicePath)
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(map[string]any{
-			"status":  http.StatusOK,
-			"message": "POST request handled successfully",
-		})
-		// http.Post()
+		defer r.Body.Close()
+		req, err := http.NewRequest(http.MethodPost, servicePath, r.Body)
+		if err != nil {
+			w.WriteHeader(http.StatusBadGateway)
+			json.NewEncoder(w).Encode(map[string]any{
+				"status": http.StatusBadGateway,
+				"error":  err.Error(),
+			})
+			return
+		}
+
+		req.Header = r.Header.Clone()
+
+		client := &http.Client{}
+		resp, err := client.Do(req)
+		if err != nil {
+			w.WriteHeader(http.StatusBadGateway)
+			json.NewEncoder(w).Encode(map[string]any{
+				"status": http.StatusBadGateway,
+				"error":  err.Error(),
+			})
+			return
+		}
+		defer resp.Body.Close()
+
+		w.WriteHeader(resp.StatusCode)
+		for k, v := range resp.Header {
+			for _, val := range v {
+				w.Header().Add(k, val)
+			}
+		}
+
+		if _, err := io.Copy(w, resp.Body); err != nil {
+			fmt.Println("error copying response:", err)
+		}
+
 	})
 }
 
@@ -66,13 +109,41 @@ func PUT(mux *http.ServeMux, path string, servicePath string) {
 			return
 		}
 
-		fmt.Println("Put:", path, servicePath)
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(map[string]any{
-			"status":  http.StatusOK,
-			"message": "Put request handled successfully",
-		})
-		// http.Put()
+		defer r.Body.Close()
+		req, err := http.NewRequest(http.MethodPost, servicePath, r.Body)
+		if err != nil {
+			w.WriteHeader(http.StatusBadGateway)
+			json.NewEncoder(w).Encode(map[string]any{
+				"status": http.StatusBadGateway,
+				"error":  err.Error(),
+			})
+			return
+		}
+
+		req.Header = r.Header.Clone()
+
+		client := &http.Client{}
+		resp, err := client.Do(req)
+		if err != nil {
+			w.WriteHeader(http.StatusBadGateway)
+			json.NewEncoder(w).Encode(map[string]any{
+				"status": http.StatusBadGateway,
+				"error":  err.Error(),
+			})
+			return
+		}
+		defer resp.Body.Close()
+
+		w.WriteHeader(resp.StatusCode)
+		for k, v := range resp.Header {
+			for _, val := range v {
+				w.Header().Add(k, val)
+			}
+		}
+
+		if _, err := io.Copy(w, resp.Body); err != nil {
+			fmt.Println("error copying response:", err)
+		}
 	})
 }
 
@@ -89,13 +160,42 @@ func PATCH(mux *http.ServeMux, path string, servicePath string) {
 			return
 		}
 
-		fmt.Println("Patch:", path, servicePath)
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(map[string]any{
-			"status":  http.StatusOK,
-			"message": "Patch request handled successfully",
-		})
-		// http.Patch()
+		defer r.Body.Close()
+		req, err := http.NewRequest(http.MethodPost, servicePath, r.Body)
+		if err != nil {
+			w.WriteHeader(http.StatusBadGateway)
+			json.NewEncoder(w).Encode(map[string]any{
+				"status": http.StatusBadGateway,
+				"error":  err.Error(),
+			})
+			return
+		}
+
+		req.Header = r.Header.Clone()
+
+		client := &http.Client{}
+		resp, err := client.Do(req)
+		if err != nil {
+			w.WriteHeader(http.StatusBadGateway)
+			json.NewEncoder(w).Encode(map[string]any{
+				"status": http.StatusBadGateway,
+				"error":  err.Error(),
+			})
+			return
+		}
+		defer resp.Body.Close()
+
+		w.WriteHeader(resp.StatusCode)
+		for k, v := range resp.Header {
+			for _, val := range v {
+				w.Header().Add(k, val)
+			}
+		}
+
+		if _, err := io.Copy(w, resp.Body); err != nil {
+			fmt.Println("error copying response:", err)
+		}
+
 	})
 }
 
@@ -112,14 +212,42 @@ func DELETE(mux *http.ServeMux, path string, servicePath string) {
 			return
 		}
 
-		fmt.Println("Delete:", path, servicePath)
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(map[string]any{
-			"status":  http.StatusOK,
-			"message": "Delete request handled successfully",
-		})
-		
-		// http.Delete()
+		defer r.Body.Close()
+		req, err := http.NewRequest(http.MethodDelete, servicePath, r.Body)
+		if err != nil {
+			w.WriteHeader(http.StatusBadGateway)
+			json.NewEncoder(w).Encode(map[string]any{
+				"status": http.StatusBadGateway,
+				"error":  err.Error(),
+			})
+			return
+		}
+
+		req.Header = r.Header.Clone()
+
+		client := &http.Client{}
+		resp, err := client.Do(req)
+		if err != nil {
+			w.WriteHeader(http.StatusBadGateway)
+			json.NewEncoder(w).Encode(map[string]any{
+				"status": http.StatusBadGateway,
+				"error":  err.Error(),
+			})
+			return
+		}
+		defer resp.Body.Close()
+
+		for k, v := range resp.Header {
+			for _, val := range v {
+				w.Header().Add(k, val)
+			}
+		}
+
+		w.WriteHeader(resp.StatusCode)
+
+		if _, err := io.Copy(w, resp.Body); err != nil {
+			fmt.Println("error copying response:", err)
+		}
 	})
 }
 
@@ -136,13 +264,42 @@ func OPTIONS(mux *http.ServeMux, path string, servicePath string) {
 			return
 		}
 
-		fmt.Println("Options:", path, servicePath)
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(map[string]any{
-			"status":  http.StatusOK,
-			"message": "Options request handled successfully",
-		})
-		// http.Options()
+		defer r.Body.Close()
+		req, err := http.NewRequest(http.MethodOptions, servicePath, r.Body)
+		if err != nil {
+			w.WriteHeader(http.StatusBadGateway)
+			json.NewEncoder(w).Encode(map[string]any{
+				"status": http.StatusBadGateway,
+				"error":  err.Error(),
+			})
+			return
+		}
+
+		req.Header = r.Header.Clone()
+
+		client := &http.Client{}
+		resp, err := client.Do(req)
+		if err != nil {
+			w.WriteHeader(http.StatusBadGateway)
+			json.NewEncoder(w).Encode(map[string]any{
+				"status": http.StatusBadGateway,
+				"error":  err.Error(),
+			})
+			return
+		}
+		defer resp.Body.Close()
+
+		for k, v := range resp.Header {
+			for _, val := range v {
+				w.Header().Add(k, val)
+			}
+		}
+
+		w.WriteHeader(resp.StatusCode)
+
+		if _, err := io.Copy(w, resp.Body); err != nil {
+			fmt.Println("error copying response:", err)
+		}
 	})
 }
 
@@ -159,12 +316,37 @@ func HEAD(mux *http.ServeMux, path string, servicePath string) {
 			return
 		}
 
-		fmt.Println("Head:", path, servicePath)
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(map[string]any{
-			"status":  http.StatusOK,
-			"message": "Head request handled successfully",
-		})
-		// http.Head()
+		defer r.Body.Close()
+		req, err := http.NewRequest(http.MethodHead, servicePath, nil)
+		if err != nil {
+			w.WriteHeader(http.StatusBadGateway)
+			json.NewEncoder(w).Encode(map[string]any{
+				"status": http.StatusBadGateway,
+				"error":  err.Error(),
+			})
+			return
+		}
+
+		req.Header = r.Header.Clone()
+
+		client := &http.Client{}
+		resp, err := client.Do(req)
+		if err != nil {
+			w.WriteHeader(http.StatusBadGateway)
+			json.NewEncoder(w).Encode(map[string]any{
+				"status": http.StatusBadGateway,
+				"error":  err.Error(),
+			})
+			return
+		}
+		defer resp.Body.Close()
+
+		for k, v := range resp.Header {
+			for _, val := range v {
+				w.Header().Add(k, val)
+			}
+		}
+
+		w.WriteHeader(resp.StatusCode)
 	})
 }
