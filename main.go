@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+
+	"github.com/sajal-jayanto/api-gateway/api"
 )
 
 type Config struct {
@@ -47,31 +49,33 @@ func main(){
 	for _, service := range config.Servers {
     for _, endpoint := range service.Endpoints {
 			s, e := service, endpoint
-			dynamic := fmt.Sprintf("%s%s", s.Path, e.Path)
-			if dynamic[0] != '/' {
-				dynamic = "/" + dynamic
-			}
+			
+			path := fmt.Sprintf("%s%s", s.Path, e.Path)
+			
+			/// if you want to custom load balance add your logic here to select the s.Dome ans you want and put you owns algorithm  
+			servicePath := fmt.Sprintf("%s:%s%s",s.Demon, s.Port, path)
+
 			switch e.Method{
 				case "GET":{
-					GET(v1Mux, dynamic)
+					api.GET(v1Mux, path, servicePath)
 				}
 				case "POST":{
-					POST(v1Mux, dynamic)
+					api.POST(v1Mux, path, servicePath)
 				}
 				case "PUT":{
-					PUT(v1Mux, dynamic)
+					api.PUT(v1Mux, path, servicePath)
 				}
 				case "PATCH":{
-					PATCH(v1Mux, dynamic)
+					api.PATCH(v1Mux, path, servicePath)
 				}
 				case "HEAD":{
-					HEAD(v1Mux, dynamic)
+					api.HEAD(v1Mux, path, servicePath)
 				}
 				case "OPTIONS":{
-					OPTIONS(v1Mux, dynamic)
+					api.OPTIONS(v1Mux, path, servicePath)
 				}
 				case "DELETE":{
-					DELETE(v1Mux, dynamic)
+					api.DELETE(v1Mux, path, servicePath)
 				}
 			}
     }
@@ -81,76 +85,4 @@ func main(){
 	if err := http.ListenAndServe(":8080", rootMux); err != nil {
 		fmt.Println("Error:", err)
 	}
-}
-
-
-func GET(mux *http.ServeMux, path string) {
-	mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
-			return
-		}
-		// http.Get('/')
-		
-	})
-}
-
-func POST(mux *http.ServeMux, path string) {
-	mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
-			return
-		}
-		// http.Post()
-	})
-}
-
-func PUT(mux *http.ServeMux, path string) {
-	mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPut {
-			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
-			return
-		}
-		// http.Put()
-	})
-}
-
-func PATCH(mux *http.ServeMux, path string) {
-	mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPatch {
-			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
-			return
-		}
-		// http.Patch()
-	})
-}
-
-func DELETE(mux *http.ServeMux, path string) {
-	mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodDelete {
-			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
-			return
-		}
-		// http.Delete()
-	})
-}
-
-func OPTIONS(mux *http.ServeMux, path string) {
-	mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodOptions {
-			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
-			return
-		}
-		// http.Options()
-	})
-}
-
-func HEAD(mux *http.ServeMux, path string) {
-	mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodHead {
-			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
-			return
-		}
-		// http.Head()
-	})
 }
