@@ -51,7 +51,7 @@ func main(){
 			s, e := service, endpoint
 			
 			path := fmt.Sprintf("%s%s", s.Path, e.Path)
-			
+
 			/// if you want to custom load balance add your logic here to select the s.Dome ans you want and put you owns algorithm  
 			servicePath := fmt.Sprintf("%s:%s%s",s.Demon, s.Port, path)
 
@@ -81,8 +81,8 @@ func main(){
     }
 	}
 
-	fmt.Println("Server running on http://127.0.0.1:8080")
-	if err := http.ListenAndServe(":8080", rootMux); err != nil {
+	fmt.Println("Server running on http://127.0.0.1:3000")
+	if err := http.ListenAndServe(":3000", rootMux); err != nil {
 		fmt.Println("Error:", err)
 	}
 }

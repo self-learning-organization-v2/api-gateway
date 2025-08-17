@@ -1,6 +1,20 @@
 version: "3.8"
 
 services:
+  go-gateway-1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: go-gateway-service-1
+    ports:
+      - "3000:3000"
+  go-gateway-2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: go-gateway-service-2
+    ports:
+      - "3001:3000"
   nginx:
     image: nginx:latest
     container_name: nginx-gateway
@@ -8,3 +22,6 @@ services:
       - "8080:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - go-gateway-1
+      - go-gateway-2
