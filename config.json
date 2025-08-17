@@ -1,0 +1,56 @@
+{
+  "servers": [
+    {
+      "name": "auth-service",
+      "path": "/auth",
+      "demon": "http://127.0.0.1",
+      "port": "8000",
+      "endpoints": [
+        {
+          "path": "/login",
+          "method": "POST",
+          "timeOut": 3000,
+          "authenticated": false
+        },
+        {
+          "path": "/register",
+          "method": "POST",
+          "timeOut": 3000,
+          "authenticated": false
+        },
+        {
+          "path": "/forget-password",
+          "method": "GET",
+          "timeOut": 3000,
+          "authenticated": true
+        }
+      ]
+    },
+    {
+      "name": "user-service",
+      "path": "/user",
+      "demon": "http://127.0.0.1",
+      "port": "8001",
+      "endpoints": [
+        {
+          "path": "/profile",
+          "method": "GET",
+          "timeOut": 3000,
+          "authenticated": true
+        },
+        {
+          "path": "/update",
+          "method": "PUT",
+          "timeOut": 3000,
+          "authenticated": true
+        },
+        {
+          "path": "/delete",
+          "method": "DELETE",
+          "timeOut": 3000,
+          "authenticated": true
+        }
+      ]
+    }
+  ]
+}
